@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 2.70"
+      version = "~> 3.39"
     }
   }
 }
@@ -58,7 +58,7 @@ data "template_file" "user_data_template" {
   vars = {
     bucket_name               = module.s3_bucket.name,
     rds_endpoint              = module.rds_database.rds_endpoint,
-    rds_read_replica_endpoint = module.rds_database.rds_read_replica_endpoint,
+//    rds_read_replica_endpoint = module.rds_database.rds_read_replica_endpoint,
     rds_port                  = module.rds_database.rds_port,
     rds_user                  = var.db_username,
     rds_password              = var.db_password,

@@ -4,7 +4,6 @@ import os
 import boto3
 from botocore.exceptions import ClientError
 from flask import request, send_file
-import psycopg2
 from psycopg2.pool import ThreadedConnectionPool
 
 from app import app
@@ -16,8 +15,7 @@ RDS_PORT = os.environ.get('RDS_PORT')
 RDS_USER = os.environ.get('RDS_USER')
 RDS_PASSWORD = os.environ.get('RDS_PASSWORD')
 RDS_DB = os.environ.get('RDS_DB')
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+
 
 RDS_TABLE_NAME = 'name_to_s3_key'
 
@@ -36,6 +34,8 @@ read_pool = ThreadedConnectionPool(1, 10,
                                    user=RDS_USER,
                                    password=RDS_PASSWORD,
                                    port=RDS_PORT)
+s3_client = boto3.client('s3')
+s3 = boto3.resource('s3')
 
 
 @app.route('/<name>', methods=['GET', 'PUT', 'DELETE'])
@@ -65,7 +65,6 @@ def delete():
         command = f"DROP TABLE IF EXISTS {RDS_TABLE_NAME}"
         cursor.execute(command)
         conn.commit()
-    s3 = boto3.resource('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACESS_KEY)
     bucket = s3.Bucket(BUCKET_NAME)
     bucket.objects.all().delete()
     logger.info(f'Have deleted all objects in {BUCKET_NAME} and have dropped table {RDS_TABLE_NAME}')
@@ -101,9 +100,6 @@ def upload_file(name: str, file):
         key_there = cursor.fetchone()
         if key_there:
             return {'post': 'fail'}, 400
-        s3_client = boto3.client('s3',
-                                 aws_access_key_id=AWS_ACCESS_KEY_ID,
-                                 aws_secret_access_key=AWS_SECRET_ACESS_KEY)
         try:
             cursor.execute(command, (name, key))
             response = s3_client.put_object(Body=file,
@@ -128,8 +124,6 @@ def delete_file(name: str):
         if values is None or len(values) == 0:
             return {'not present': True}, 200
         key = values[0]
-        s3_client = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID,
-                                 aws_secret_access_key=AWS_SECRET_ACESS_KEY)
         try:
             delete_command = f"DELETE FROM {RDS_TABLE_NAME} WHERE name = %s"
             cursor.execute(delete_command, (name,))
@@ -156,5 +150,4 @@ def get_s3_key_from_rds(name):
 
 
 def download_file(key):
-    s3_client = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACESS_KEY)
     return s3_client.get_object(Bucket=BUCKET_NAME, Key=key)

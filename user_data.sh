@@ -9,6 +9,4 @@ sudo docker run\
  --env RDS_USER=${rds_user}\
  --env RDS_PASSWORD=${rds_password}\
  --env RDS_DB=${rds_db}\
- --env AWS_ACCESS_KEY_ID=${aws_access_key_id}\
- --env AWS_SECRET_ACCESS_KEY=${aws_secret_access_key}\
   -dp 5000:5000 my-image-app-image

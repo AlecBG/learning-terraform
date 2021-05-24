@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 2.70"
+      version = "~> 3.39"
     }
   }
 }
@@ -149,6 +149,7 @@ resource "aws_s3_bucket" "main_bucket" {
   bucket = var.bucket_name
   tags   = var.tags
   policy = data.aws_iam_policy_document.s3_policy.json
+  force_destroy = true
   versioning {
     enabled = true
   }
@@ -157,7 +158,7 @@ resource "aws_s3_bucket" "main_bucket" {
 
     rules {
       id     = "foobar"
-      prefix = "foo"
+      prefix = "user-photos/"
       status = "Enabled"
 
       destination {
@@ -172,8 +173,8 @@ resource "aws_s3_bucket" "replica_bucket" {
   provider = aws.replica_region
   bucket   = var.replica_bucket_name
   acl      = "private"
-  region   = var.aws_back_up_region
   tags     = var.tags
+  force_destroy = true
   versioning {
     enabled = true
   }

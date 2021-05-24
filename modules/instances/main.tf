@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 2.70"
+      version = "~> 3.39"
     }
   }
 }
@@ -24,6 +24,9 @@ resource "aws_launch_template" "launch_template" {
   user_data = var.user_data
   iam_instance_profile {
     arn = aws_iam_instance_profile.instance_profile.arn
+  }
+  monitoring {
+    enabled = true
   }
 }
 

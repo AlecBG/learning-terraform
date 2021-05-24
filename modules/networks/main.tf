@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 2.70"
+      version = "~> 3.39"
     }
   }
 }
@@ -78,6 +78,14 @@ resource "aws_security_group" "my_image_app_security_group" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
+    description = "Internal"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self        = true
+  }
+
+  ingress {
     description = "HTTPS traffic"
     from_port   = 443
     to_port     = 443
@@ -91,22 +99,6 @@ resource "aws_security_group" "my_image_app_security_group" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["${var.my_ip}/32"]
-  }
-
-  ingress {
-    description = "Internal traffic on port 5000"
-    from_port   = 5000
-    to_port     = 5000
-    protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main.cidr_block]
-  }
-
-  ingress {
-    description = "Internal traffic on port 5432 (for postgres)"
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main.cidr_block]
   }
 
   egress {
