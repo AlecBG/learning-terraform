@@ -1,11 +1,13 @@
 variable "bucket_name" {
   description = "Name of S3 bucket storing images"
   type        = string
+  default     = "my-image-app-bucket"
 }
 
 variable "replica_bucket_name" {
   description = "Name of S3 bucket replica storing images"
   type        = string
+  default     = "my-image-app-bucket-replica"
 }
 
 variable "aws_region" {
