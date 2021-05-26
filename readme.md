@@ -29,8 +29,6 @@ db_name               = XXX
 my_ip                 = XXX  // If you want to ssh into the instance
 ssl_certificate_arn   = XXX  // The certificate for your domain name.
 hosted_zone_id        = XXX  // Your hosted zone id for the domain name.
-aws_access_key_id     = XXX  // Your AWS credentials.
-aws_secret_access_key = XXX  // Your AWS credentials.
 ``` 
 You can then also specify in a `terraform.tfvars` file
 ```
