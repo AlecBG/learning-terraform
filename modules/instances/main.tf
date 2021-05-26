@@ -16,9 +16,12 @@ resource "aws_launch_template" "launch_template" {
   name_prefix   = "my_image_app"
   image_id      = var.image_id
   instance_type = "t2.micro"
-  user_data = var.user_data
+  user_data     = var.user_data
   iam_instance_profile {
     arn = aws_iam_instance_profile.instance_profile.arn
+  }
+  network_interfaces {
+    security_groups = [var.security_group_id]
   }
   monitoring {
     enabled = true
@@ -50,12 +53,12 @@ data "template_file" "role_template" {
 }
 
 resource "aws_autoscaling_group" "autoscaling_group" {
-  vpc_zone_identifier = [for k, v in var.subnets : v]
-  desired_capacity    = 2
-  max_size            = 4
-  min_size            = 1
+  vpc_zone_identifier       = [for k, v in var.subnets : v]
+  desired_capacity          = 2
+  max_size                  = 4
+  min_size                  = 1
   health_check_grace_period = 300
-  health_check_type   = "ELB"
+  health_check_type         = "ELB"
 
   launch_template {
     id      = aws_launch_template.launch_template.id
@@ -64,19 +67,19 @@ resource "aws_autoscaling_group" "autoscaling_group" {
 }
 
 resource "aws_autoscaling_policy" "autoscaling_policy_up" {
-  name                      = "autoscaling_policy_up"
-  scaling_adjustment        = 1
-  adjustment_type           = "ChangeInCapacity"
-  cooldown                  = 300
-  autoscaling_group_name    = aws_autoscaling_group.autoscaling_group.name
+  name                   = "autoscaling_policy_up"
+  scaling_adjustment     = 1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
+  autoscaling_group_name = aws_autoscaling_group.autoscaling_group.name
 }
 
 resource "aws_autoscaling_policy" "autoscaling_policy_down" {
-  name                      = "autoscaling_policy_down"
-  scaling_adjustment        = -1
-  adjustment_type           = "ChangeInCapacity"
-  cooldown                  = 300
-  autoscaling_group_name    = aws_autoscaling_group.autoscaling_group.name
+  name                   = "autoscaling_policy_down"
+  scaling_adjustment     = -1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 300
+  autoscaling_group_name = aws_autoscaling_group.autoscaling_group.name
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_alarm_up" {
@@ -92,7 +95,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_alarm_up" {
     AutoScalingGroupName = aws_autoscaling_group.autoscaling_group.name
   }
   alarm_description = "CPU utilization high"
-  alarm_actions = [aws_autoscaling_policy.autoscaling_policy_up.arn]
+  alarm_actions     = [aws_autoscaling_policy.autoscaling_policy_up.arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_alarm_down" {
@@ -108,7 +111,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_alarm_down" {
     AutoScalingGroupName = aws_autoscaling_group.autoscaling_group.name
   }
   alarm_description = "CPU utilization low"
-  alarm_actions = [aws_autoscaling_policy.autoscaling_policy_down.arn]
+  alarm_actions     = [aws_autoscaling_policy.autoscaling_policy_down.arn]
 }
 
 resource "aws_lb" "load_balancer" {

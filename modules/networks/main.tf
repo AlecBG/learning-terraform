@@ -17,10 +17,10 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_subnet" "subnets" {
-  for_each          = var.azs_to_cidrs
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = each.value
-  availability_zone = each.key
+  for_each                = var.azs_to_cidrs
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = each.value
+  availability_zone       = each.key
   map_public_ip_on_launch = true
 }
 
