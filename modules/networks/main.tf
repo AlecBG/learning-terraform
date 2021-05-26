@@ -21,6 +21,7 @@ resource "aws_subnet" "subnets" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = each.value
   availability_zone = each.key
+  map_public_ip_on_launch = true
 }
 
 resource "aws_internet_gateway" "internet_gateway" {
