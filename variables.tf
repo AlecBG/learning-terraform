@@ -64,14 +64,13 @@ variable "hosted_zone_id" {
   type        = string
 }
 
-variable "aws_access_key_id" {
-  description = "Access key id"
-  type        = string
-  sensitive   = true
+variable "azs_to_cidrs" {
+  description = "Map from availability zones to the CIDRs of the subnets"
+  type        = map(string)
+  default = {
+    "eu-west-1a" = "10.0.0.0/20"
+    "eu-west-1b" = "10.0.16.0/20"
+    "eu-west-1c" = "10.0.32.0/20"
+  }
 }
 
-variable "aws_secret_access_key" {
-  description = "Secret access key"
-  type        = string
-  sensitive   = true
-}

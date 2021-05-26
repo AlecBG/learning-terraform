@@ -9,19 +9,9 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "subnet1_id" {
-  description = "A possible subnet the autoscaling group can launch ec2s in."
-  type        = string
-}
-
-variable "subnet2_id" {
-  description = "A possible subnet the autoscaling group can launch ec2s in."
-  type        = string
-}
-
-variable "subnet3_id" {
-  description = "A possible subnet the autoscaling group can launch ec2s in."
-  type        = string
+variable "subnets" {
+  description = "Ids of the subnets."
+  type        = map(string)
 }
 
 variable "security_group_id" {

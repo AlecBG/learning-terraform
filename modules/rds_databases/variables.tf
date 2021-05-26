@@ -32,19 +32,9 @@ variable "security_group_id" {
   type        = string
 }
 
-variable "subnet_1" {
-  description = "Id of first subnet."
-  type        = string
-}
-
-variable "subnet_2" {
-  description = "Id of second subnet."
-  type        = string
-}
-
-variable "subnet_3" {
-  description = "Id of third subnet."
-  type        = string
+variable "subnets" {
+  description = "Ids of the subnets."
+  type        = map(string)
 }
 
 variable "tags" {

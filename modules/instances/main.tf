@@ -55,7 +55,7 @@ data "template_file" "role_template" {
 }
 
 resource "aws_autoscaling_group" "autoscaling_group" {
-  vpc_zone_identifier = [var.subnet1_id, var.subnet2_id, var.subnet3_id]
+  vpc_zone_identifier = [for k, v in var.subnets : v]
   desired_capacity    = 1
   max_size            = 4
   min_size            = 1
@@ -70,7 +70,7 @@ resource "aws_lb" "load_balancer" {
   name               = "my-image-app-load-balancer"
   load_balancer_type = "application"
   security_groups    = [var.security_group_id]
-  subnets            = [var.subnet1_id, var.subnet2_id, var.subnet3_id]
+  subnets            = [for k, v in var.subnets : v]
 
 }
 

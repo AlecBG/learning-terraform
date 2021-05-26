@@ -16,22 +16,11 @@ resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
 }
 
-resource "aws_subnet" "subnet_a" {
+resource "aws_subnet" "subnets" {
+  for_each          = var.azs_to_cidrs
   vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = "${var.aws_region}a"
-}
-
-resource "aws_subnet" "subnet_b" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.2.0/24"
-  availability_zone = "${var.aws_region}b"
-}
-
-resource "aws_subnet" "subnet_c" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.3.0/24"
-  availability_zone = "${var.aws_region}c"
+  cidr_block        = each.value
+  availability_zone = each.key
 }
 
 resource "aws_internet_gateway" "internet_gateway" {
@@ -44,7 +33,7 @@ resource "aws_vpc_endpoint" "s3_endpoint" {
 }
 
 resource "aws_vpc_endpoint_route_table_association" "route_table_for_s3_endpoint" {
-  route_table_id = aws_route_table.route_table.id
+  route_table_id  = aws_route_table.route_table.id
   vpc_endpoint_id = aws_vpc_endpoint.s3_endpoint.id
 }
 
@@ -57,18 +46,9 @@ resource "aws_route_table" "route_table" {
   }
 }
 
-resource "aws_route_table_association" "route_table_association_subnet_a" {
-  subnet_id      = aws_subnet.subnet_a.id
-  route_table_id = aws_route_table.route_table.id
-}
-
-resource "aws_route_table_association" "route_table_association_subnet_b" {
-  subnet_id      = aws_subnet.subnet_b.id
-  route_table_id = aws_route_table.route_table.id
-}
-
-resource "aws_route_table_association" "route_table_association_subnet_c" {
-  subnet_id      = aws_subnet.subnet_c.id
+resource "aws_route_table_association" "route_table_association_subnets" {
+  for_each       = aws_subnet.subnets
+  subnet_id      = each.value.id
   route_table_id = aws_route_table.route_table.id
 }
 

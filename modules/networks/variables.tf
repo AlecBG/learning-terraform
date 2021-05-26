@@ -15,3 +15,8 @@ variable "my_ip" {
   type        = string
   sensitive   = true
 }
+
+variable "azs_to_cidrs" {
+  description = "Map from availability zones to the CIDRs of the subnets"
+  type        = map(string)
+}
