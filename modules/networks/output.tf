@@ -3,19 +3,11 @@ output "vpc_id" {
   value       = aws_vpc.main.id
 }
 
-output "subnet1_id" {
-  description = "Id of the first subnet"
-  value       = aws_subnet.subnet_a.id
-}
-
-output "subnet2_id" {
-  description = "Id of the second subnet"
-  value       = aws_subnet.subnet_b.id
-}
-
-output "subnet3_id" {
-  description = "Id of the third subnet"
-  value       = aws_subnet.subnet_c.id
+output "subnet_ids" {
+  description = "Ids of the subnets"
+  value = {
+    for k, v in aws_subnet.subnets : k => v.id
+  }
 }
 
 output "security_group_id" {

@@ -23,21 +23,17 @@ This produces an AMI image that will be save to your account. Make note of the i
 
 You will need to write in the root directory of this project a `secret.tfvars` file that specifies the following
 ```
-db_username           = XXX  // Details for the postgres database.
+db_username           = XXX  // Details for the postgres database. Can be arbitary
 db_password           = XXX
 db_name               = XXX  
 my_ip                 = XXX  // If you want to ssh into the instance
 ssl_certificate_arn   = XXX  // The certificate for your domain name.
 hosted_zone_id        = XXX  // Your hosted zone id for the domain name.
-aws_access_key_id     = XXX  // Your AWS credentials.
-aws_secret_access_key = XXX  // Your AWS credentials.
 ``` 
 You can then also specify in a `terraform.tfvars` file
 ```
 ami_name            = XXX  // AMI made by Packer above.
 domain_name         = XXX  // Your registered domain name.
-bucket_name         = XXX  // Name of main S3 bucket
-replica_bucket_name = XXX  // Name of replica bucket
 aws_region          = XXX  // Main region in which your app runs.
 aws_back_up_region  = XXX  // Back-up region where data is replicated.
 ```
