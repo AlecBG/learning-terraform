@@ -146,9 +146,9 @@ resource "aws_s3_bucket_public_access_block" "s3_replica_bucket_public_access_bl
 }
 
 resource "aws_s3_bucket" "main_bucket" {
-  bucket = var.bucket_name
-  tags   = var.tags
-  policy = data.aws_iam_policy_document.s3_policy.json
+  bucket        = var.bucket_name
+  tags          = var.tags
+  policy        = data.aws_iam_policy_document.s3_policy.json
   force_destroy = true
   versioning {
     enabled = true
@@ -170,10 +170,9 @@ resource "aws_s3_bucket" "main_bucket" {
 }
 
 resource "aws_s3_bucket" "replica_bucket" {
-  provider = aws.replica_region
-  bucket   = var.replica_bucket_name
-  acl      = "private"
-  tags     = var.tags
+  provider      = aws.replica_region
+  bucket        = var.replica_bucket_name
+  tags          = var.tags
   force_destroy = true
   versioning {
     enabled = true
